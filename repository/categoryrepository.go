@@ -11,6 +11,7 @@ type CategoryRepository interface {
 	InsertCategory(c model.Category) (model.Category, error)
 	UpdateCategory(c model.Category) (model.Category, error)
 	DeleteCategory(c model.Category) (model.Category, error)
+	GetAllCategory(c model.Category) (result []model.Category, err error)
 }
 
 type categoryRepository struct {
@@ -60,4 +61,27 @@ func (c *categoryRepository) DeleteCategory(category model.Category) (model.Cate
 		panic(errs)
 	}
 	return category, nil
+}
+
+func (c *categoryRepository) GetAllCategory(category model.Category) (result []model.Category, err error) {
+	sql := "SELECT id, name FROM category ORDER BY id ASC"
+	rows, err := c.db.Query(sql)
+	if err != nil {
+		return
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var categori model.Category
+
+		err = rows.Scan(&categori.Id, &categori.Name)
+		if err != nil {
+			return
+		}
+
+		result = append(result, categori)
+	}
+
+	return
 }

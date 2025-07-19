@@ -86,5 +86,5 @@ func GetAllBooks(ctx *gin.Context) {
 		return
 	}
 
-	common.GenerateSuccessResponseWithData(ctx, "Successfully delete books", categori)
+	common.GenerateSuccessResponseWithData(ctx, "Successfully get all books", categori)
 }

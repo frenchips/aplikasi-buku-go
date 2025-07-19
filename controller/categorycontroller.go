@@ -81,5 +81,23 @@ func DeleteCategory(ctx *gin.Context) {
 		return
 	}
 
-	common.GenerateSuccessResponseWithData(ctx, "Successfully saved category", categori)
+	common.GenerateSuccessResponseWithData(ctx, "Successfully delete category", categori)
+}
+
+func GetAllCategory(ctx *gin.Context) {
+	var input model.Category
+
+	// Buat repo dan service
+	repo := repository.NewCategoryRepo(config.DB)
+	service := service.NewCategoryService(repo)
+
+	fmt.Println("Input JSON Name : ", input.Name)
+
+	categori, err := service.GetAllCategory(input)
+	if err != nil {
+		common.GenerateErrorResponse(ctx, err.Error())
+		return
+	}
+
+	common.GenerateSuccessResponseWithData(ctx, "Successfully get all category", categori)
 }

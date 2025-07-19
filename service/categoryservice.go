@@ -9,6 +9,7 @@ type CategoryService interface {
 	InsertCategory(model.Category) (model.Category, error)
 	UpdateCategory(model.Category) (model.Category, error)
 	DeleteCategory(model.Category) (model.Category, error)
+	GetAllCategory(model.Category) (result []model.Category, err error)
 }
 
 type categoryService struct {
@@ -29,4 +30,8 @@ func (c *categoryService) UpdateCategory(category model.Category) (model.Categor
 
 func (c *categoryService) DeleteCategory(category model.Category) (model.Category, error) {
 	return c.repo.DeleteCategory(category)
+}
+
+func (c *categoryService) GetAllCategory(category model.Category) (result []model.Category, err error) {
+	return c.repo.GetAllCategory(category)
 }

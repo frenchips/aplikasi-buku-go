@@ -10,7 +10,7 @@ type BukuRepository interface {
 	InsertBuku(c model.Buku) (model.Buku, error)
 	GetBooks(c model.Buku) (model.Buku, error)
 	DeleteBuku(c model.Buku) (model.Buku, error)
-	GetAllBooks(c model.Buku) (model.Buku, error)
+	GetAllBooks(c model.Buku) (result []model.Buku, err error)
 }
 
 type bukuRepository struct {
@@ -57,15 +57,25 @@ func (c *bukuRepository) GetBooks(buku model.Buku) (model.Buku, error) {
 
 }
 
-func (c *bukuRepository) GetAllBooks(buku model.Buku) (model.Buku, error) {
-	sql := "SELECT b.title, c.id as category, c.name, b.description, b.image_url, b.release_year, b.price, b.total_page, b.thickness FROM buku b JOIN category c on b.category_id = c.id"
-	errs := c.db.QueryRow(sql).Scan(&buku.Title, &buku.Category.Id, &buku.Category.Name, &buku.Description, &buku.ImageUrl, &buku.ReleaseYear, &buku.Price, &buku.TotalPage, &buku.Thickness)
-	if errs != nil {
-		panic(errs)
+func (c *bukuRepository) GetAllBooks(buku model.Buku) (result []model.Buku, err error) {
+	sql := "SELECT b.id, b.title, c.id as category, c.name, b.description, b.image_url, b.release_year, b.price, b.total_page, b.thickness FROM buku b JOIN category c on b.category_id = c.id ORDER BY b.id ASC"
+	rows, err := c.db.Query(sql)
+	if err != nil {
+		return
 	}
 
-	return buku, nil
+	defer rows.Close()
+	for rows.Next() {
+		var buku model.Buku
 
+		err = rows.Scan(&buku.Id, &buku.Title, &buku.Category.Id, &buku.Category.Name, &buku.Description, &buku.ImageUrl, &buku.ReleaseYear, &buku.Price, &buku.TotalPage, &buku.Thickness)
+		if err != nil {
+			return
+		}
+
+		result = append(result, buku)
+	}
+	return
 }
 
 func (c *bukuRepository) DeleteBuku(buku model.Buku) (model.Buku, error) {

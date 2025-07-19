@@ -9,7 +9,7 @@ type BukuService interface {
 	InsertBuku(model.Buku) (model.Buku, error)
 	GetBooks(model.Buku) (model.Buku, error)
 	DeleteBuku(model.Buku) (model.Buku, error)
-	GetAllBooks(model.Buku) (model.Buku, error)
+	GetAllBooks(model.Buku) (result []model.Buku, err error)
 }
 
 type bukuService struct {
@@ -28,7 +28,7 @@ func (c *bukuService) GetBooks(books model.Buku) (model.Buku, error) {
 	return c.repo.GetBooks(books)
 }
 
-func (c *bukuService) GetAllBooks(books model.Buku) (model.Buku, error) {
+func (c *bukuService) GetAllBooks(books model.Buku) (result []model.Buku, err error) {
 	return c.repo.GetAllBooks(books)
 }
 
