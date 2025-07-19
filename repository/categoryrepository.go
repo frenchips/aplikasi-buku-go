@@ -2,6 +2,7 @@ package repository
 
 import (
 	"aplikasi-buku-go/model"
+	"aplikasi-buku-go/response"
 	"database/sql"
 	"fmt"
 	"time"
@@ -12,6 +13,7 @@ type CategoryRepository interface {
 	UpdateCategory(c model.Category) (model.Category, error)
 	DeleteCategory(c model.Category) (model.Category, error)
 	GetAllCategory(c model.Category) (result []model.Category, err error)
+	GetBooksByCategory(categoryId int) (response.CategoryResponse, error)
 }
 
 type categoryRepository struct {
@@ -84,4 +86,57 @@ func (c *categoryRepository) GetAllCategory(category model.Category) (result []m
 	}
 
 	return
+}
+
+func (c *categoryRepository) GetBooksCategory(category model.Category) (result []model.Category, err error) {
+	sql := "SELECT id, name FROM category ORDER BY id ASC"
+	rows, err := c.db.Query(sql)
+	if err != nil {
+		return
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var categori model.Category
+
+		err = rows.Scan(&categori.Id, &categori.Name)
+		if err != nil {
+			return
+		}
+
+		result = append(result, categori)
+	}
+
+	return
+}
+
+func (c *categoryRepository) GetBooksByCategory(categoryId int) (response.CategoryResponse, error) {
+	sql := "select distinct c.name, b.title, b.description, b.release_year, b.price, b.total_page, b.thickness from category c join buku b on c.id = b.category_id where c.id = $1"
+	rows, err := c.db.Query(sql, categoryId)
+
+	defer rows.Close()
+
+	var name string
+	var books []response.BukuResponse
+
+	for rows.Next() {
+
+		var buku response.BukuResponse
+
+		err = rows.Scan(&name, &buku.Title, &buku.Description, &buku.ReleaseYear, &buku.Price, &buku.TotalPage, &buku.Thickness)
+		if err != nil {
+			return response.CategoryResponse{}, err
+		}
+
+		books = append(books, buku)
+	}
+
+	// Bangun response akhir
+	result := response.CategoryResponse{
+		Name: name,
+		Buku: books,
+	}
+
+	return result, nil
 }

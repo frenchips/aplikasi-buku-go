@@ -101,3 +101,20 @@ func GetAllCategory(ctx *gin.Context) {
 
 	common.GenerateSuccessResponseWithData(ctx, "Successfully get all category", categori)
 }
+
+func GetBooksByCategory(ctx *gin.Context) {
+
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	// Buat repo dan service
+	repo := repository.NewCategoryRepo(config.DB)
+	service := service.NewCategoryService(repo)
+
+	categori, err := service.GetBooksByCategory(id)
+	if err != nil {
+		common.GenerateErrorResponse(ctx, err.Error())
+		return
+	}
+
+	common.GenerateSuccessResponseWithData(ctx, "Successfully get books by category", categori)
+}

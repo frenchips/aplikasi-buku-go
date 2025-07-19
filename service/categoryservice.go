@@ -3,6 +3,7 @@ package service
 import (
 	"aplikasi-buku-go/model"
 	"aplikasi-buku-go/repository"
+	"aplikasi-buku-go/response"
 )
 
 type CategoryService interface {
@@ -10,6 +11,7 @@ type CategoryService interface {
 	UpdateCategory(model.Category) (model.Category, error)
 	DeleteCategory(model.Category) (model.Category, error)
 	GetAllCategory(model.Category) (result []model.Category, err error)
+	GetBooksByCategory(categoryId int) (response.CategoryResponse, error)
 }
 
 type categoryService struct {
@@ -34,4 +36,8 @@ func (c *categoryService) DeleteCategory(category model.Category) (model.Categor
 
 func (c *categoryService) GetAllCategory(category model.Category) (result []model.Category, err error) {
 	return c.repo.GetAllCategory(category)
+}
+
+func (c *categoryService) GetBooksByCategory(categoryId int) (response.CategoryResponse, error) {
+	return c.repo.GetBooksByCategory(categoryId)
 }
