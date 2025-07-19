@@ -1,0 +1,63 @@
+package repository
+
+import (
+	"aplikasi-buku-go/model"
+	"database/sql"
+	"fmt"
+	"time"
+)
+
+type CategoryRepository interface {
+	InsertCategory(c model.Category) (model.Category, error)
+	UpdateCategory(c model.Category) (model.Category, error)
+	DeleteCategory(c model.Category) (model.Category, error)
+}
+
+type categoryRepository struct {
+	db *sql.DB
+}
+
+func NewCategoryRepo(db *sql.DB) CategoryRepository {
+	return &categoryRepository{db: db}
+}
+
+func (c *categoryRepository) InsertCategory(category model.Category) (model.Category, error) {
+
+	now := time.Now()
+	createBy := "Admin"
+
+	sql := "INSERT INTO category(name, created_at, created_by) VALUES ($1, $2, $3) RETURNING id"
+	errs := c.db.QueryRow(sql, &category.Name, &now, &createBy).Scan(&category.Id)
+	if errs != nil {
+		panic(errs)
+	}
+	category.CreatedAt = now
+	category.CreatedBy = createBy
+	return category, nil
+}
+
+func (c *categoryRepository) UpdateCategory(category model.Category) (model.Category, error) {
+
+	now := time.Now()
+	updateBy := "Admin"
+
+	sql := "UPDATE category SET name = $1, modified_at = $2, modified_by = $3 WHERE id = $4 RETURNING id"
+	errs := c.db.QueryRow(sql, category.Name, now, updateBy, category.Id).Scan(&category.Id)
+	if errs != nil {
+		panic(errs)
+	}
+	fmt.Println("Category name before update:", category.Name)
+	category.ModifiedAt = now
+	category.ModifiedBy = updateBy
+	return category, nil
+}
+
+func (c *categoryRepository) DeleteCategory(category model.Category) (model.Category, error) {
+
+	sql := "DELETE FROM category WHERE id = $1 RETURNING id"
+	errs := c.db.QueryRow(sql, &category.Id).Scan(&category.Id)
+	if errs != nil {
+		panic(errs)
+	}
+	return category, nil
+}
