@@ -16,6 +16,12 @@ func SetupRoutes() *gin.Engine {
 		api.POST("/categories", controller.InsertCategory)
 		api.PUT("/categories/:id", controller.UpdateCategory)
 		api.DELETE("/categories/:id", controller.DeleteCategory)
+
+		// BUKU
+		api.POST("/books", controller.InsertBuku)
+		api.GET("/books/:id", controller.GetBuku)
+		api.DELETE("/books/:id", controller.DeleteBuku)
+		api.GET("/books", controller.GetAllBooks)
 	}
 
 	return r

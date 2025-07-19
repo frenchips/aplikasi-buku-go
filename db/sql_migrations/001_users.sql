@@ -13,6 +13,6 @@ create table users(
 
 -- +migrate Down
 -- +migrate StatementBegin
-DROP TABLE IF EXISTS gorp_migrations;
-DROP TABLE IF EXISTS users;
+-- DROP TABLE IF EXISTS gorp_migrations;
+-- DROP TABLE IF EXISTS users;
 -- +migrate StatementEnd

@@ -9,9 +9,9 @@ create table buku (
 	release_year int not null,
 	price int not null,
 	total_page int not null,
-	thickness int not null,
-	create_at timestamp not null,
-	create_by varchar(64) not null,
+	thickness varchar(64) not null,
+	created_at timestamp not null,
+	created_by varchar(64) not null,
 	modified_at timestamp,
 	modified_by varchar(64),
 	foreign key (category_id) references category(id)
@@ -21,5 +21,6 @@ create table buku (
 
 -- +migrate Down
 -- +migrate StatementBegin
-DROP TABLE IF EXISTS buku;
+-- DROP TABLE IF EXISTS gorp_migrations;
+-- DROP TABLE IF EXISTS buku;
 -- +migrate StatementEnd

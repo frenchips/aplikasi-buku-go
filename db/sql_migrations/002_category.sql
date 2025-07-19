@@ -13,5 +13,6 @@ create table category (
 
 -- +migrate Down
 -- +migrate StatementBegin
+DROP TABLE IF EXISTS gorp_migrations;
 DROP TABLE IF EXISTS category;
 -- +migrate StatementEnd
